@@ -1,36 +1,40 @@
-# Real-Time Analytics Dashboard - Crypto Market Sentiment Tracker
+# Real-Time Crypto Analytics Dashboard 📊
 
-A comprehensive real-time analytics system for tracking cryptocurrency market sentiment and price movements using Apache Spark, PostgreSQL, and modern web technologies.
+A modern, real-time cryptocurrency analytics dashboard with live price updates, interactive charts, and a sleek glassmorphism UI design. Built with FastAPI and React.
 
-## 🚀 Features
+## ✨ Features
 
-- **Real-time Data Ingestion**: WebSocket-based streaming of crypto market data
-- **Spark Stream Processing**: Windowed aggregations and sentiment analysis using Apache Spark
-- **Historical Storage**: PostgreSQL database for time-series data persistence
-- **Interactive Dashboard**: React-based frontend with live charts and metrics
-- **Scalable Architecture**: Containerized microservices for easy deployment
+- **Real-time Price Updates**: WebSocket-based live cryptocurrency price streaming
+- **Interactive Charts**: Beautiful Chart.js visualizations with historical data
+- **Modern UI Design**: Dark theme with glassmorphism effects and smooth animations
+- **5 Major Cryptocurrencies**: BTC, ETH, BNB, SOL, ADA tracking
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Zero Database Required**: Simplified architecture for easy deployment
+- **Free Deployment**: Deploy on Render.com + Vercel at $0/month
 
-## 🏗️ Architecture
+## 🏗️ Architecture (Simplified)
 
 ```
-┌─────────────┐     WebSocket      ┌──────────────┐
-│ Crypto APIs │ ───────────────▶  │    Backend   │
-│ (Binance,   │                    │   (FastAPI)  │
-│  CoinGecko) │                    └──────┬───────┘
-└─────────────┘                           │
-                                          ▼
-                                  ┌───────────────┐
-                                  │ Apache Spark  │
-                                  │  Streaming    │
-                                  └───────┬───────┘
-                                          │
-                              ┌───────────┴──────────┐
-                              ▼                      ▼
-                      ┌──────────────┐      ┌──────────────┐
-                      │ PostgreSQL   │      │   Frontend   │
-                      │  (History)   │      │   (React)    │
-                      └──────────────┘      └──────────────┘
+┌─────────────────┐     WebSocket      ┌──────────────────┐
+│  Price Engine   │ ───────────────▶  │   FastAPI        │
+│  (Simulated)    │                    │   Backend        │
+└─────────────────┘                    └────────┬─────────┘
+                                                │
+                                                │ WebSocket
+                                                │
+                                        ┌───────▼─────────┐
+                                        │  React Frontend │
+                                        │  (Chart.js)     │
+                                        └─────────────────┘
 ```
+
+## 🎨 UI Features
+
+- **Dark Theme**: Modern #0a0e27 background with purple gradients
+- **Glassmorphism**: Frosted glass effects with backdrop blur
+- **Gradient Text**: Eye-catching blue-to-purple-to-pink gradients
+- **Live Animations**: Ping effects on real-time updates
+- **Responsive Cards**: Adaptive layout for all screen sizes
 
 ## 📁 Project Structure
 
@@ -38,81 +42,60 @@ A comprehensive real-time analytics system for tracking cryptocurrency market se
 realtime_analytics_dashboard/
 ├── backend/                 # Python FastAPI backend
 │   ├── app/
-│   │   ├── main.py         # FastAPI application entry
-│   │   ├── websocket.py    # WebSocket handler
-│   │   ├── models.py       # Data models
-│   │   └── config.py       # Configuration
-│   └── requirements.txt
-├── spark/                   # Spark streaming jobs
-│   ├── streaming_processor.py
-│   ├── sentiment_analyzer.py
-│   └── requirements.txt
-├── database/               # Database schemas and migrations
-│   ├── init.sql
-│   └── schema.sql
-├── frontend/               # React application
+│   │   ├── main_simple.py  # Production entry point
+│   │   ├── websocket.py    # WebSocket connection manager
+│   │   └── __init__.py
+│   ├── requirements-simple.txt
+│   ├── render.yaml         # Render.com config
+│   └── Dockerfile
+├── frontend/               # React frontend
 │   ├── src/
-│   │   ├── components/
-│   │   ├── services/
-│   │   └── App.jsx
-│   └── package.json
-├── docker-compose.yml      # Container orchestration
-└── README.md
+│   │   ├── App.jsx        # Main application
+│   │   ├── index.css      # Modern styling
+│   │   └── components/
+│   │       ├── CryptoCard.jsx
+│   │       └── PriceChart.jsx
+│   ├── package.json
+│   ├── vercel.json        # Vercel config
+│   └── public/
+├── DEPLOYMENT_GUIDE.md    # Complete deployment instructions
+├── DEPLOYMENT_HISTORY.md  # Deployment tracking
+└── README.md             # This file
 ```
+
 
 ## 🛠️ Tech Stack
 
 ### Backend
-- **FastAPI**: High-performance Python web framework with WebSocket support
-- **Python 3.11+**: Modern Python features
-
-### Data Processing
-- **Apache Spark 3.5**: Distributed stream processing
-- **PySpark**: Python API for Spark
-- **Databricks**: Compatible with Databricks Community Edition
-
-### Database
-- **PostgreSQL 15**: Relational database for historical data
-- **SQLAlchemy**: ORM for database operations
+- **FastAPI 0.109.0**: High-performance Python web framework
+- **Uvicorn**: ASGI server for production
+- **WebSockets**: Real-time bidirectional communication
+- **Pydantic**: Data validation and settings management
 
 ### Frontend
-- **React 18**: Modern UI framework
-- **Chart.js**: Interactive charts and visualizations
-- **Recharts**: Additional charting library
-- **WebSocket API**: Real-time data streaming
+- **React 18.2**: Modern UI framework
+- **Chart.js 4.4**: Interactive price charts
+- **Axios**: HTTP client for API calls
+- **CSS Variables**: Dynamic theming system
 
-## 📦 Installation
+### Deployment
+- **Render.com**: Backend hosting (free tier)
+- **Vercel**: Frontend hosting (free tier)
+- **GitHub**: Version control and CI/CD
+
+## 🚀 Quick Start
 
 ### Prerequisites
 - Python 3.11+
 - Node.js 18+
-- PostgreSQL 15+
-- Java 11+ (for Spark)
-- Docker & Docker Compose (optional)
+- Git
 
-### Option 1: Docker Setup (Recommended)
+### Local Development
 
+#### 1. Clone Repository
 ```bash
-# Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/GouthamUKS/Crypto_Analytics_Dashboard.git
 cd realtime_analytics_dashboard
-
-# Start all services
-docker-compose up -d
-
-# Access the dashboard
-open http://localhost:3000
-```
-
-### Option 2: Manual Setup
-
-#### 1. Database Setup
-```bash
-# Start PostgreSQL
-createdb crypto_analytics
-
-# Run migrations
-psql -d crypto_analytics -f database/init.sql
 ```
 
 #### 2. Backend Setup
@@ -120,20 +103,39 @@ psql -d crypto_analytics -f database/init.sql
 cd backend
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
+pip install -r requirements-simple.txt
 
-# Set environment variables
-export DATABASE_URL="postgresql://user:password@localhost:5432/crypto_analytics"
-export REDIS_URL="redis://localhost:6379"
-
-# Start the backend
-uvicorn app.main:app --reload --port 8000
+# Start backend server
+python app/main_simple.py
+# Backend runs at http://localhost:8000
 ```
 
-#### 3. Spark Streaming Setup
+#### 3. Frontend Setup
 ```bash
-cd spark
-pip install -r requirements.txt
+cd frontend
+npm install
+
+# Start development server
+npm start
+# Frontend runs at http://localhost:3000
+```
+
+#### 4. Open Browser
+Visit http://localhost:3000 to see your dashboard!
+
+## 🌐 Production Deployment
+
+See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete step-by-step instructions.
+
+### Quick Deploy Summary:
+1. **Backend**: Deploy to Render.com (3 minutes)
+2. **Frontend**: Deploy to Vercel (2 minutes)
+3. **Cost**: $0/month (both free tiers)
+
+### Deployment Resources:
+- 📖 [Complete Deployment Guide](DEPLOYMENT_GUIDE.md)
+- 📊 [Deployment History](DEPLOYMENT_HISTORY.md)
+- 🔧 [Architecture Docs](ARCHITECTURE.md)
 
 # Submit Spark job
 spark-submit \
@@ -146,133 +148,169 @@ spark-submit \
 cd frontend
 npm install
 
-# Start development server
-npm start
-```
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-Create a `.env` file in the project root:
-
+#### Backend (Optional)
 ```env
-# Database
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/crypto_analytics
+# Production
+ENVIRONMENT=production
+ALLOWED_ORIGINS=https://your-app.vercel.app
 
-# Spark
-SPARK_MASTER=local[*]
-SPARK_APP_NAME=CryptoAnalytics
-
-# API Keys
-COINMARKETCAP_API_KEY=your_key_here
-BINANCE_WS_URL=wss://stream.binance.com:9443/ws
-
-# Backend
-BACKEND_HOST=0.0.0.0
-BACKEND_PORT=8000
-
-# Frontend
-REACT_APP_WS_URL=ws://localhost:8000/ws
-REACT_APP_API_URL=http://localhost:8000/api
+# Local Development (defaults)
+ENVIRONMENT=development
+ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ```
 
-## 📊 Data Sources
+#### Frontend (For Production)
+```env
+# Vercel Environment Variables
+REACT_APP_API_URL=https://your-backend.onrender.com
+REACT_APP_WS_URL=wss://your-backend.onrender.com
+```
 
-The system currently supports:
-- **Binance WebSocket**: Real-time price data
-- **CoinGecko API**: Market data and sentiment
-- **Twitter API**: Social sentiment (optional)
-
-## 🎯 Features in Detail
+## 📊 Features in Detail
 
 ### 1. Real-Time Price Tracking
-- Live price updates for major cryptocurrencies
-- Price change indicators (1h, 24h, 7d)
-- Volume analysis
+- ✅ Live price updates every 2-3 seconds
+- ✅ 5 major cryptocurrencies (BTC, ETH, BNB, SOL, ADA)
+- ✅ Percentage change indicators
+- ✅ Smooth animations on updates
 
-### 2. Sentiment Analysis
-- Social media sentiment scoring
-- News sentiment integration
-- Aggregated sentiment metrics
+### 2. Interactive Charts
+- ✅ Historical price visualization
+- ✅ 20-point rolling data window
+- ✅ Gradient fill effects
+- ✅ Responsive canvas rendering
 
-### 3. Windowed Aggregations
-- Moving averages (5min, 15min, 1h)
-- Volume-weighted average price (VWAP)
-- Price volatility metrics
+### 3. Modern UI/UX
+- ✅ Dark theme optimized for extended viewing
+- ✅ Glassmorphism cards with backdrop blur
+- ✅ Gradient text effects
+- ✅ Mobile-responsive design
+- ✅ Smooth fade-in animations
 
-### 4. Historical Analysis
-- Time-series data storage
-- Custom time range queries
-- Export functionality
+## 🎯 API Endpoints
 
-## 🚀 Usage
-
-### Starting the Dashboard
-
-1. Ensure all services are running
-2. Navigate to `http://localhost:3000`
-3. Select cryptocurrencies to track
-4. View real-time updates and analytics
-
-### API Endpoints
-
-```
-GET  /api/health              - Health check
-GET  /api/cryptos             - List tracked cryptocurrencies
-GET  /api/prices/:symbol      - Get current price
-GET  /api/historical/:symbol  - Get historical data
-WS   /ws                      - WebSocket connection
+### Health Check
+```bash
+GET http://localhost:8000/health
+Response: {"status": "healthy"}
 ```
 
-## 📈 Performance
+### WebSocket Connection
+```javascript
+const ws = new WebSocket('ws://localhost:8000/ws/BTCUSDT');
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log(data); // { symbol, price, change24h, timestamp }
+};
+```
 
-- **Throughput**: Processes 10,000+ events/second
-- **Latency**: <100ms end-to-end latency
-- **Storage**: Efficient time-series compression
-- **Scalability**: Horizontal scaling with Spark
+### Supported Symbols
+- `BTCUSDT` - Bitcoin
+- `ETHUSDT` - Ethereum
+- `BNBUSDT` - BNB
+- `SOLUSDT` - Solana
+- `ADAUSDT` - Cardano
+
+```
+
 
 ## 🧪 Testing
 
+### Local Testing
 ```bash
-# Backend tests
+# Test backend
 cd backend
-pytest
+source venv/bin/activate
+python app/main_simple.py
+# Visit http://localhost:8000/health
 
-# Frontend tests
+# Test frontend
 cd frontend
-npm test
-
-# Integration tests
-docker-compose -f docker-compose.test.yml up
+npm start
+# Visit http://localhost:3000
 ```
 
-## 🔍 Monitoring
+### WebSocket Testing
+```bash
+# Using wscat (install: npm install -g wscat)
+wscat -c ws://localhost:8000/ws/BTCUSDT
+# You should see real-time price updates
+```
 
-The system includes:
-- Prometheus metrics
-- Grafana dashboards
-- Spark UI monitoring
-- Application logs
+## 📂 Project Files
+
+### Key Files
+- [`backend/app/main_simple.py`](backend/app/main_simple.py) - Production backend
+- [`backend/app/websocket.py`](backend/app/websocket.py) - WebSocket manager
+- [`frontend/src/App.jsx`](frontend/src/App.jsx) - Main React app
+- [`frontend/src/index.css`](frontend/src/index.css) - Modern styling
+- [`backend/render.yaml`](backend/render.yaml) - Render config
+- [`frontend/vercel.json`](frontend/vercel.json) - Vercel config
+
+### Documentation
+- [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) - Step-by-step deployment
+- [DEPLOYMENT_HISTORY.md](DEPLOYMENT_HISTORY.md) - Deployment tracking
+- [API.md](API.md) - API documentation
+- [ARCHITECTURE.md](ARCHITECTURE.md) - System architecture
+
+## 🎨 Customization
+
+### Adding New Cryptocurrencies
+Edit [`backend/app/main_simple.py`](backend/app/main_simple.py):
+```python
+symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "ADAUSDT", "DOGEUSDT"]  # Add more
+```
+
+### Changing Update Frequency
+```python
+await asyncio.sleep(3)  # Change from 3 to desired seconds
+```
+
+### Customizing UI Colors
+Edit [`frontend/src/index.css`](frontend/src/index.css):
+```css
+--bg-primary: #0a0e27;     /* Main background */
+--accent-blue: #667eea;    /* Blue accent */
+--accent-purple: #764ba2;  /* Purple accent */
+```
+
+## 📊 Live Demo
+
+- **GitHub Repository**: https://github.com/GouthamUKS/Crypto_Analytics_Dashboard
+- **Backend**: Deploy on Render.com (see deployment guide)
+- **Frontend**: Deploy on Vercel (see deployment guide)
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! 
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## 📝 License
 
-MIT License
+MIT License - feel free to use this project for learning or commercial purposes.
 
 ## 🙏 Acknowledgments
 
-- Binance for WebSocket API
-- CoinGecko for market data
-- Apache Spark community
+- FastAPI team for the amazing framework
+- React and Chart.js communities
+- Render.com and Vercel for free hosting
 
-## 📞 Contact
+## 📞 Support
 
-For questions or support, please open an issue on GitHub.
+- 📧 Open an issue on GitHub
+- 📖 Check [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for deployment help
+- 💡 Review [DEPLOYMENT_HISTORY.md](DEPLOYMENT_HISTORY.md) for configuration details
 
 ---
 
-**Built with ❤️ for real-time data engineering**
+**Built with ❤️ using FastAPI + React | Deployed on Render + Vercel**

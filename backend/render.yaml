@@ -5,9 +5,11 @@ services:
     region: oregon
     plan: free
     buildCommand: pip install -r requirements-simple.txt
-    startCommand: python app/main_simple.py
+    startCommand: uvicorn app.main_simple:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
-      - key: PORT
-        value: 8000
+      - key: ENVIRONMENT
+        value: production
+      - key: ALLOWED_ORIGINS
+        sync: false
