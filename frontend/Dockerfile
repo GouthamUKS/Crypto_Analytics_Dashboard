@@ -1,4 +1,5 @@
-FROM node:18-alpine
+# Build stage
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
@@ -11,8 +12,26 @@ RUN npm install
 # Copy application code
 COPY . .
 
+# Build application
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install serve to run production build
+RUN npm install -g serve
+
+# Copy built application from builder
+COPY --from=builder /app/build ./build
+
 # Expose port
 EXPOSE 3000
 
-# Start development server
-CMD ["npm", "start"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --quiet --tries=1 --spider http://localhost:3000 || exit 1
+
+# Serve production build
+CMD ["serve", "-s", "build", "-l", "3000"]

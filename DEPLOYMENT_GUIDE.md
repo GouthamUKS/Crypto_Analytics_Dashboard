@@ -1,20 +1,84 @@
 # 🚀 Complete Deployment Guide
 
 ## Quick Overview
-- **Backend**: Deploy on Render.com (Free tier)
-- **Frontend**: Deploy on Vercel (Free tier)
-- **Total Cost**: $0/month
+- **Option 1**: Deploy on Render.com + Vercel (Free tier - recommended)
+- **Option 2**: Deploy locally with Docker (recommended for development)
+- **Option 3**: Self-hosted with Docker on your own server
+- **Total Cost**: $0/month for all options
 
 ---
 
 ## 📋 Prerequisites
 1. GitHub account (you already have the repo)
-2. Vercel account (free - sign up at vercel.com)
-3. Render account (free - sign up at render.com)
+2. For Cloud Deployment:
+   - Vercel account (free - sign up at vercel.com)
+   - Render account (free - sign up at render.com)
+3. For Docker Deployment:
+   - Docker installed (`docker --version`)
+   - Docker Compose installed (`docker-compose --version`)
 
 ---
 
-## Part 1: Deploy Backend on Render.com
+## 🐳 Option 1: Deploy Locally with Docker (Quickest!)
+
+### Prerequisites
+```bash
+# Check Docker installation
+docker --version
+docker-compose --version
+```
+
+### Step 1: Start All Services with One Command
+```bash
+cd /path/to/realtime_analytics_dashboard
+docker-compose up
+```
+
+**That's it!** Your app is now running:
+- 🌐 Frontend: http://localhost:3000
+- 🔌 Backend API: http://localhost:8000
+- 📊 API Health: http://localhost:8000/health
+
+### Step 2: Verify Services Are Running
+```bash
+# In another terminal
+docker-compose ps
+# You should see both backend and frontend services running
+```
+
+### Step 3: Stop Services
+```bash
+docker-compose down
+# Use -v flag to also remove volumes: docker-compose down -v
+```
+
+### Docker Useful Commands
+```bash
+# View logs
+docker-compose logs backend      # Backend logs
+docker-compose logs frontend     # Frontend logs
+docker-compose logs -f backend   # Follow backend logs
+
+# Rebuild images
+docker-compose up --build
+
+# Remove all containers and images
+docker-compose down -v
+
+# Access container shell
+docker exec -it crypto_dashboard_backend bash
+docker exec -it crypto_dashboard_frontend sh
+```
+
+### Environment in Docker
+Docker Compose automatically sets:
+- Backend URL: `http://backend:8000` (internal)
+- WebSocket URL: `ws://backend:8000` (internal)
+- Frontend accesses backend via service name `backend`
+
+---
+
+## Part 1: Deploy Backend on Render.com (Cloud)
 
 ### Step 1: Create Render Account
 1. Go to https://render.com
@@ -182,6 +246,132 @@ That's it! Both services auto-deploy on git push.
 
 ---
 
+## 🐳 Option 2: Self-Hosted Docker Deployment
+
+### On Your Own Server (AWS EC2, DigitalOcean, Linode, etc.)
+
+#### Step 1: Server Setup
+```bash
+# SSH into your server
+ssh ubuntu@your-server-ip
+
+# Install Docker and Docker Compose
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# Add user to docker group (avoid using sudo)
+sudo usermod -aG docker $USER
+```
+
+#### Step 2: Clone Repository
+```bash
+git clone https://github.com/GouthamUKS/Crypto_Analytics_Dashboard.git
+cd realtime_analytics_dashboard
+```
+
+#### Step 3: Update Environment Variables
+```bash
+# Edit docker-compose.yml for production
+nano docker-compose.yml
+
+# Update ALLOWED_ORIGINS to your domain:
+# ALLOWED_ORIGINS: http://localhost:3000,http://your-domain.com,https://your-domain.com
+```
+
+#### Step 4: Start Services with Nginx Reverse Proxy
+```bash
+# Create nginx config
+sudo nano /etc/nginx/sites-available/crypto-dashboard
+
+# Add this configuration:
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }
+
+    location /api {
+        proxy_pass http://localhost:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /ws {
+        proxy_pass http://localhost:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $host;
+    }
+}
+
+# Enable the site
+sudo ln -s /etc/nginx/sites-available/crypto-dashboard /etc/nginx/sites-enabled/
+sudo systemctl restart nginx
+```
+
+#### Step 5: Run Docker Compose
+```bash
+# Run in background with detach
+docker-compose up -d
+
+# Verify services
+docker-compose ps
+
+# View logs
+docker-compose logs -f
+```
+
+#### Step 6: Optional - Add SSL with Let's Encrypt
+```bash
+# Install Certbot
+sudo apt-get install certbot python3-certbot-nginx
+
+# Get certificate
+sudo certbot --nginx -d your-domain.com
+
+# Auto-renew certs
+sudo systemctl enable certbot.timer
+```
+
+#### Management Commands
+```bash
+# Restart services
+docker-compose restart
+
+# Update app (pull latest code)
+git pull
+docker-compose up -d --build
+
+# View service status
+docker-compose ps
+
+# Check logs
+docker-compose logs backend
+docker-compose logs frontend
+
+# Stop all services
+docker-compose stop
+
+# Remove everything (careful!)
+docker-compose down -v
+```
+
+### Cost Estimates (Self-Hosted)
+- **DigitalOcean Droplet** (Basic): $5-6/month
+- **AWS EC2 Free Tier**: $0 (first year)
+- **Linode**: $5/month (basic)
+- **Vultr**: $2.50-6/month
+
+---
+
 ## 🎨 Custom Domain (Optional)
 
 ### On Vercel
@@ -193,6 +383,25 @@ That's it! Both services auto-deploy on git push.
 1. Go to Service Settings → Custom Domain
 2. Add your domain
 3. Update DNS records
+
+### On Self-Hosted
+1. Update DNS records to point to server IP
+2. Configure Nginx as shown above
+3. Get SSL certificate with Let's Encrypt
+
+---
+
+## 📊 Deployment Comparison
+
+| Feature | Docker Local | Render/Vercel | Self-Hosted Docker |
+|---------|--------------|---------------|-------------------|
+| Cost | $0 | $0 (free tiers) | $5-50/month |
+| Setup Time | 2 minutes | 10 minutes | 15-30 minutes |
+| Best For | Development | Production (easy) | Full Control |
+| Scaling | Manual | Auto | Manual |
+| SSL | Not needed | Automatic | Let's Encrypt |
+| Maintenance | Minimal | Minimal | More involved |
+| Performance | Local | Good (CDN) | Depends on server |
 
 ---
 
